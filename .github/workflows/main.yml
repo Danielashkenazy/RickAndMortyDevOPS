@@ -1,0 +1,41 @@
+name: CI/CD Pipeline - Rick and Morty App
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up kind cluster
+        uses: helm/kind-action@v1.8.0
+
+      - name: Build Docker image
+        run: |
+          cd docker
+          docker build -t rick:latest --no-cache .
+          kind load docker-image rick:latest
+
+      - name: Install Helm
+        run: |
+          curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+      - name: Deploy with Helm
+        run: |
+          cd cd ../yamls
+          helm install myapp ./rickandmorty --wait
+
+      - name: Test API endpoints
+        run: |
+          set -e
+          kubectl port-forward svc/myapp-rickandmorty 8000:80 &
+          sleep 5
+          curl -f http://localhost:8000/health
+          curl -f http://localhost:8000/api

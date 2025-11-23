@@ -1,4 +1,4 @@
-# 🚀 Rick and Morty API - Kubernetes Deployment on AWS EKS
+# 🚀 Rick and Morty API - Kubernetes Deployment on 
 
 [![Python](https://img.shields.io/badge/Python-3.11-blue.svg)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/Flask-3.0-green.svg)](https://flask.palletsprojects.com/)
